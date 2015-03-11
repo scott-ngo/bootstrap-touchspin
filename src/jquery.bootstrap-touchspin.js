@@ -55,7 +55,7 @@
       mousewheel: true,
       buttondown_class: 'btn btn-default',
       buttonup_class: 'btn btn-default',
-	    buttondown_txt: '-',
+	    buttondown_txt: '&#8211;',
 	    buttonup_txt: '+'
     };
 
@@ -182,6 +182,7 @@
           _advanceInputGroup(parentelement);
         }
         else {
+          console.log('buttondown_txt', settings.buttondown_txt);
           _buildInputGroup();
         }
       }
