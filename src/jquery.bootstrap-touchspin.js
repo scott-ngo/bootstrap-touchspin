@@ -631,7 +631,18 @@
         var initvalue = value,
             boostedstep = _getBoostedStep();
 
-        value = value - boostedstep;
+        if (settings.options !== void 0 && settings.freeform === false) {
+          var i = settings.options.indexOf(value);
+          if (i - 1 !== -1) {
+            value = settings.options[i - 1];
+          }
+          else {
+            value = settings.options[settings.options.length - 1];
+          }
+        }
+        else {
+          value = value - boostedstep;
+        }
 
         if (value < settings.min) {
           value = settings.min;
