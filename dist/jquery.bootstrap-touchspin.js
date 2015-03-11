@@ -43,6 +43,8 @@
       min: 0,
       max: 100,
       initval: '',
+      replacementval: '',
+      freeform: false,
       step: 1,
       decimals: 0,
       stepinterval: 100,
@@ -61,14 +63,15 @@
       mousewheel: true,
       buttondown_class: 'btn btn-default',
       buttonup_class: 'btn btn-default',
-	  buttondown_txt: '-',
-	  buttonup_txt: '+'
+	    buttondown_txt: '-',
+	    buttonup_txt: '+'
     };
 
     var attributeMap = {
       min: 'min',
       max: 'max',
       initval: 'init-val',
+      replacementval: 'replacement-val',
       step: 'step',
       decimals: 'decimals',
       stepinterval: 'step-interval',
@@ -87,8 +90,8 @@
       mousewheel: 'mouse-wheel',
       buttondown_class: 'button-down-class',
       buttonup_class: 'button-up-class',
-	  buttondown_txt: 'button-down-txt',
-	  buttonup_txt: 'button-up-txt'
+	    buttondown_txt: 'button-down-txt',
+	    buttonup_txt: 'button-up-txt'
     };
 
     return this.each(function() {
@@ -519,6 +522,10 @@
         val = originalinput.val();
 
         if (val === '') {
+          if (settings.replacementval !== '') {
+            originalinput.val(settings.replacementval);
+            originalinput.trigger('change');
+          }
           return;
         }
 
@@ -529,7 +536,12 @@
         parsedval = parseFloat(val);
 
         if (isNaN(parsedval)) {
-          parsedval = 0;
+          if (settings.replacementval !== '') {
+            parsedval = settings.replacementval;
+          }
+          else {
+            parsedval = 0;
+          }
         }
 
         returnval = parsedval;
@@ -544,6 +556,12 @@
 
         if (parsedval > settings.max) {
           returnval = settings.max;
+        }
+
+        if (settings.options !== void 0) {
+          if (settings.options.indexOf(parsedval) === -1 && settings.freeform === false) {
+            returnval = settings.min;
+          }
         }
 
         returnval = _forcestepdivisibility(returnval);
@@ -583,7 +601,18 @@
         var initvalue = value,
             boostedstep = _getBoostedStep();
 
-        value = value + boostedstep;
+        if (settings.options !== void 0 && settings.freeform === false) {
+          var i = settings.options.indexOf(value);
+          if (i + 1 !== settings.options.length) {
+            value = settings.options[i + 1];
+          }
+          else {
+            value = settings.options[0];
+          }
+        }
+        else {
+          value = value + boostedstep;
+        }
 
         if (value > settings.max) {
           value = settings.max;
